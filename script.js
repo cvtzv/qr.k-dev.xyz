@@ -1,4 +1,18 @@
 $(document).ready(function() {
+    // Переключение тем
+    $('#theme-toggle').click(function() {
+        $('body').toggleClass('dark-mode');
+        $('.container').toggleClass('dark-mode');
+        $('button').toggleClass('dark-mode');
+        
+        // Меняем иконку
+        if ($('body').hasClass('dark-mode')) {
+            $(this).text('☀️'); // Солнце для светлой темы
+        } else {
+            $(this).text('🌙'); // Луна для тёмной темы
+        }
+    });
+
     $('#generate-btn').click(function() {
         var text = $('#text-input').val();
         $('#qrcode').empty(); // Очищаем предыдущий QR-код
