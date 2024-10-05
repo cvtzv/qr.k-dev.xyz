@@ -16,6 +16,7 @@ body {
     padding: 20px;
     text-align: center;
     width: 300px;
+    box-sizing: border-box; /* Позволяет учитывать padding в ширине */
 }
 
 h1 {
@@ -29,6 +30,7 @@ input[type="text"] {
     border: 1px solid #ddd;
     border-radius: 4px;
     margin-bottom: 10px;
+    box-sizing: border-box; /* Позволяет учитывать padding в ширине */
 }
 
 button {
@@ -39,6 +41,7 @@ button {
     color: #fff;
     cursor: pointer;
     transition: background-color 0.3s;
+    margin: 5px 0; /* Добавлено для отступа между кнопками */
 }
 
 button:hover {
@@ -46,5 +49,11 @@ button:hover {
 }
 
 #qrcode {
-    margin-top: 20px;
+    margin: 20px 0; /* Увеличен отступ сверху и снизу для большей симметрии */
+}
+
+.button-container {
+    display: flex;
+    flex-direction: column; /* Упорядочивает кнопки в столбик */
+    align-items: center; /* Центрирует кнопки */
 }
