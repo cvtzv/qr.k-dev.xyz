@@ -1,3 +1,7 @@
+* {
+    box-sizing: border-box;
+}
+
 body {
     font-family: Arial, sans-serif;
     background-color: #f4f4f4;
@@ -16,8 +20,9 @@ body {
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
     padding: 20px;
     text-align: center;
-    width: 300px;
-    box-sizing: border-box;
+    width: 90%;
+    max-width: 400px; /* Максимальная ширина для больших экранов */
+    position: relative; /* Для позиционирования переключателя */
     transition: background-color 0.3s, color 0.3s; /* Анимация смены темы */
 }
 
@@ -44,6 +49,7 @@ button {
     cursor: pointer;
     transition: background-color 0.3s;
     margin: 5px 0;
+    width: 100%; /* Кнопки занимают всю ширину */
 }
 
 button:hover {
@@ -52,6 +58,7 @@ button:hover {
 
 #qrcode {
     margin: 20px 0;
+    display: inline-block; /* Для центрирования QR-кода */
 }
 
 .button-container {
@@ -62,11 +69,19 @@ button:hover {
 
 .theme-toggle {
     position: absolute;
-    top: 20px;
-    right: 20px;
+    top: 10px;
+    right: 10px;
     cursor: pointer;
     font-size: 24px;
     transition: transform 0.3s;
+}
+
+.qr-code {
+    border-radius: 10px;
+    padding: 10px;
+    background-color: #f0f0f0; /* Фоновый цвет для QR-кода */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    margin: 0 auto; /* Центрируем QR-код */
 }
 
 body.dark-mode {
