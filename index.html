@@ -1,27 +1,28 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Генератор QR-кодов</title>
+    <title>QR Code Generator</title>
     <link rel="stylesheet" href="styles.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-    <script src="https://cdn.rawgit.com/davidshimjs/qrcodejs/gh-pages/qrcode.min.js"></script>
+    <!-- Подключаем иконки FontAwesome для переключателя тем -->
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
 </head>
 <body>
     <div class="container">
-        <h1>Генератор QR-кодов</h1>
-        <div class="theme-toggle" id="theme-toggle">🌙</div>
-        <input type="text" id="text-input" placeholder="Введите текст или URL" />
-        <button id="generate-btn">Сгенерировать QR-код</button>
-        <div id="qrcode"></div>
-        <div class="button-container">
-            <button id="download-btn" style="display: none;">Скачать QR-код</button>
-            <button id="share-btn" style="display: none;">Поделиться</button>
-            <button id="fullscreen-btn" style="display: none;">В полный экран</button>
+        <div class="theme-switcher" id="theme-switcher">
+            <i class="fas fa-moon"></i> <!-- Иконка для переключателя тем -->
         </div>
+        <h1>Генератор QR-кодов</h1>
+        <input type="text" id="text-input" placeholder="Введите текст или URL">
+        <button id="generate-btn">Сгенерировать QR-код</button>
+        <div class="qr-container">
+            <img id="qr-image" src="" alt="QR-код">
+        </div>
+        <button id="download-btn" class="secondary-btn">Скачать QR-код</button>
+        <button id="share-btn" class="secondary-btn">Поделиться</button>
+        <button id="fullscreen-btn" class="secondary-btn">В полный экран</button>
     </div>
-
     <script src="script.js"></script>
 </body>
 </html>
