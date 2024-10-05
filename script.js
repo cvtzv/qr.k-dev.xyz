@@ -1,4 +1,14 @@
 $(document).ready(function() {
+    // Определяем тему в зависимости от системных настроек
+    const prefersDarkScheme = window.matchMedia("(prefers-color-scheme: dark)");
+
+    if (prefersDarkScheme.matches) {
+        $('body').addClass('dark-mode');
+        $('.container').addClass('dark-mode');
+        $('button').addClass('dark-mode');
+        $('#theme-toggle').text('☀️'); // Солнце для светлой темы
+    }
+
     // Переключение тем
     $('#theme-toggle').click(function() {
         $('body').toggleClass('dark-mode');
@@ -30,6 +40,9 @@ $(document).ready(function() {
             colorLight : "#ffffff",
             correctLevel : QRCode.CorrectLevel.H
         });
+
+        // Добавим класс для стиля QR-кода
+        $('#qrcode').addClass('qr-code');
 
         // Показываем кнопки после генерации QR-кода
         $('#download-btn').show();
