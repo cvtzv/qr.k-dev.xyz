@@ -1,27 +1,16 @@
-$(document).ready(function() {
-    // Определяем тему в зависимости от системных настроек
-    const prefersDarkScheme = window.matchMedia("(prefers-color-scheme: dark)");
+// Переключение темы
+const themeSwitcher = document.getElementById('theme-switcher');
+const body = document.body;
 
-    if (prefersDarkScheme.matches) {
-        $('body').addClass('dark-mode');
-        $('.container').addClass('dark-mode');
-        $('button').addClass('dark-mode');
-        $('#theme-toggle').text('☀️'); // Солнце для светлой темы
-    }
+themeSwitcher.addEventListener('click', () => {
+    body.classList.toggle('dark'); // Переключение класса dark
+});
 
-    // Переключение тем
-    $('#theme-toggle').click(function() {
-        $('body').toggleClass('dark-mode');
-        $('.container').toggleClass('dark-mode');
-        $('button').toggleClass('dark-mode');
-        
-        // Меняем иконку
-        if ($('body').hasClass('dark-mode')) {
-            $(this).text('☀️'); // Солнце для светлой темы
-        } else {
-            $(this).text('🌙'); // Луна для тёмной темы
-        }
-    });
+// Автоматическая установка темы в зависимости от системной
+const systemDarkTheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
+if (systemDarkTheme) {
+    body.classList.add('dark');
+}
 
     $('#generate-btn').click(function() {
         var text = $('#text-input').val();
