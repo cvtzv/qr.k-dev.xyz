@@ -1,104 +1,129 @@
-* {
-    box-sizing: border-box;
-}
-
+/* Базовые стили */
 body {
     font-family: Arial, sans-serif;
-    background-color: #f4f4f4;
+    background-color: var(--background-color);
+    color: var(--text-color);
     margin: 0;
     padding: 0;
     display: flex;
     justify-content: center;
     align-items: center;
     height: 100vh;
-    transition: background-color 0.3s, color 0.3s; /* Анимация смены темы */
+    transition: background-color 0.3s, color 0.3s;
 }
 
+/* Контейнер */
 .container {
-    background-color: #fff;
-    border-radius: 8px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-    padding: 20px;
+    background-color: var(--container-bg);
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.1);
     text-align: center;
     width: 90%;
-    max-width: 400px; /* Максимальная ширина для больших экранов */
-    position: relative; /* Для позиционирования переключателя */
-    transition: background-color 0.3s, color 0.3s; /* Анимация смены темы */
+    max-width: 400px;
+    position: relative; /* Относительное позиционирование для переключателя тем */
 }
 
-h1 {
-    font-size: 24px;
-    margin-bottom: 20px;
-}
-
-input[type="text"] {
-    width: 100%;
-    padding: 10px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    margin-bottom: 10px;
-    box-sizing: border-box;
-}
-
-button {
-    padding: 10px;
-    border: none;
-    border-radius: 4px;
-    background-color: #28a745;
-    color: #fff;
-    cursor: pointer;
-    transition: background-color 0.3s;
-    margin: 5px 0;
-    width: 100%; /* Кнопки занимают всю ширину */
-}
-
-button:hover {
-    background-color: #218838;
-}
-
-#qrcode {
-    margin: 20px 0;
-    display: inline-block; /* Для центрирования QR-кода */
-}
-
-.button-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-
-.theme-toggle {
+/* Переключатель тем */
+.theme-switcher {
     position: absolute;
-    top: 10px;
-    right: 10px;
+    top: 15px;
+    right: 15px;
     cursor: pointer;
-    font-size: 24px;
+    font-size: 1.2em;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    padding: 5px;
+    background-color: var(--button-bg);
+    color: var(--button-color);
     transition: transform 0.3s;
 }
 
-.qr-code {
-    border-radius: 10px;
+.theme-switcher:hover {
+    transform: rotate(180deg); /* Анимация вращения */
+}
+
+/* Заголовок */
+h1 {
+    margin-bottom: 20px;
+}
+
+/* Поле ввода */
+#text-input {
+    width: calc(100% - 20px);
     padding: 10px;
-    background-color: #f0f0f0; /* Фоновый цвет для QR-кода */
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-    margin: 0 auto; /* Центрируем QR-код */
+    margin-bottom: 15px;
+    border: 1px solid var(--border-color);
+    border-radius: 5px;
 }
 
-body.dark-mode {
-    background-color: #333;
-    color: #f4f4f4;
-}
-
-.container.dark-mode {
-    background-color: #444;
-    box-shadow: 0 2px 10px rgba(255, 255, 255, 0.1);
-}
-
-button.dark-mode {
-    background-color: #555;
+/* Основная кнопка */
+#generate-btn {
+    background-color: #28a745;
     color: #fff;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-bottom: 20px;
+    transition: background-color 0.3s;
 }
 
-button.dark-mode:hover {
-    background-color: #666;
+#generate-btn:hover {
+    background-color: #218838;
+}
+
+/* Контейнер для QR-кода */
+.qr-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    margin: 20px 0;
+    border: 2px dashed var(--border-color);
+    border-radius: 10px;
+}
+
+/* Изображение QR-кода */
+#qr-image {
+    max-width: 150px;
+    display: none; /* Скрываем изображение по умолчанию */
+}
+
+/* Вторичные кнопки */
+.secondary-btn {
+    background-color: #007bff;
+    color: #fff;
+    padding: 8px 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-bottom: 10px;
+    width: calc(100% - 30px);
+    transition: background-color 0.3s;
+}
+
+.secondary-btn:hover {
+    background-color: #0056b3;
+}
+
+/* Темные и светлые темы */
+:root {
+    --background-color: #f4f4f4;
+    --text-color: #333;
+    --container-bg: #fff;
+    --border-color: #ddd;
+    --button-bg: #333;
+    --button-color: #fff;
+}
+
+body.dark {
+    --background-color: #1a1a1a;
+    --text-color: #f4f4f4;
+    --container-bg: #2a2a2a;
+    --border-color: #444;
+    --button-bg: #f4f4f4;
+    --button-color: #1a1a1a;
 }
