@@ -1,29 +1,266 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <link rel="icon" href="https://k-dev.xyz/img/favicon.ico">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>QR Code Generator</title>
-    <link rel="stylesheet" href="styles.css">
-    <!-- Подключаем иконки FontAwesome для переключателя тем -->
-    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+    <title>Генератор QR-кодов</title>
+    <style>
+        :root {
+            --background-color: #f4f4f4;
+            --text-color: #333;
+            --container-bg: #fff;
+            --border-color: #ddd;
+            --button-bg: #333;
+            --button-color: #fff;
+        }
+
+        body.dark {
+            --background-color: #1a1a1a;
+            --text-color: #f4f4f4;
+            --container-bg: #2a2a2a;
+            --border-color: #444;
+            --button-bg: #f4f4f4;
+            --button-color: #1a1a1a;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        .container {
+            background-color: var(--container-bg);
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            width: 90%;
+            max-width: 400px;
+            position: relative;
+        }
+
+        .theme-switcher {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            cursor: pointer;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: var(--button-bg);
+            color: var(--button-color);
+            border: none;
+            transition: transform 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .theme-switcher:hover {
+            transform: rotate(180deg);
+        }
+
+        h1 {
+            margin-bottom: 20px;
+            font-size: 24px;
+        }
+
+        #text-input {
+            width: calc(100% - 20px);
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid var(--border-color);
+            border-radius: 5px;
+            background-color: var(--container-bg);
+            color: var(--text-color);
+        }
+
+        #generate-btn {
+            background-color: #28a745;
+            color: #fff;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-bottom: 20px;
+            transition: background-color 0.3s;
+            width: calc(100% - 20px);
+        }
+
+        #generate-btn:hover {
+            background-color: #218838;
+        }
+
+        .qr-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            margin: 20px 0;
+            border: 2px dashed var(--border-color);
+            border-radius: 10px;
+            min-height: 150px;
+        }
+
+        .secondary-btn {
+            background-color: #007bff;
+            color: #fff;
+            padding: 8px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-bottom: 10px;
+            width: calc(100% - 20px);
+            transition: background-color 0.3s;
+        }
+
+        .secondary-btn:hover {
+            background-color: #0056b3;
+        }
+
+        .secondary-btn:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+        }
+
+        #qrcode {
+            display: inline-block;
+        }
+
+        .hidden {
+            display: none;
+        }
+    </style>
 </head>
 <body>
     <div class="container">
-        <div class="theme-switcher" id="theme-switcher">
-            <i class="fas fa-moon"></i> <!-- Иконка для переключателя тем -->
-        </div>
+        <button class="theme-switcher" id="theme-switcher">🌙</button>
         <h1>Генератор QR-кодов</h1>
         <input type="text" id="text-input" placeholder="Введите текст или URL">
         <button id="generate-btn">Сгенерировать QR-код</button>
         <div class="qr-container">
-            <img id="qr-image" src="" alt="QR-код">
+            <div id="qrcode"></div>
         </div>
-        <button id="download-btn" class="secondary-btn">Скачать QR-код</button>
-        <button id="share-btn" class="secondary-btn">Поделиться</button>
-        <button id="fullscreen-btn" class="secondary-btn">В полный экран</button>
+        <button id="download-btn" class="secondary-btn hidden">Скачать QR-код</button>
+        <button id="share-btn" class="secondary-btn hidden">Поделиться</button>
+        <button id="fullscreen-btn" class="secondary-btn hidden">В полный экран</button>
     </div>
-    <script src="script.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <script>
+        // Функция определения системной темы и установки соответствующей темы сайта
+        function setInitialTheme() {
+            const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            document.body.classList.toggle('dark', prefersDark);
+            updateThemeIcon();
+        }
+
+        // Функция обновления иконки темы
+        function updateThemeIcon() {
+            const isDark = document.body.classList.contains('dark');
+            document.getElementById('theme-switcher').textContent = isDark ? '☀️' : '🌙';
+        }
+
+        // Установка начальной темы
+        setInitialTheme();
+
+        // Переключатель темы
+        document.getElementById('theme-switcher').addEventListener('click', () => {
+            document.body.classList.toggle('dark');
+            updateThemeIcon();
+        });
+
+        // Слушатель изменения системной темы
+        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e => {
+            document.body.classList.toggle('dark', e.matches);
+            updateThemeIcon();
+        });
+
+        // Функционал генерации QR-кода
+        const generateBtn = document.getElementById('generate-btn');
+        const textInput = document.getElementById('text-input');
+        const downloadBtn = document.getElementById('download-btn');
+        const shareBtn = document.getElementById('share-btn');
+        const fullscreenBtn = document.getElementById('fullscreen-btn');
+        const qrcodeDiv = document.getElementById('qrcode');
+
+        generateBtn.addEventListener('click', () => {
+            const text = textInput.value.trim();
+            
+            if (text === '') {
+                alert('Пожалуйста, введите текст или URL');
+                return;
+            }
+
+            // Очищаем предыдущий QR-код
+            qrcodeDiv.innerHTML = '';
+
+            // Генерируем новый QR-код
+            new QRCode(qrcodeDiv, {
+                text: text,
+                width: 128,
+                height: 128,
+                colorDark: document.body.classList.contains('dark') ? '#ffffff' : '#000000',
+                colorLight: document.body.classList.contains('dark') ? '#2a2a2a' : '#ffffff',
+                correctLevel: QRCode.CorrectLevel.H
+            });
+
+            // Показываем кнопки
+            [downloadBtn, shareBtn, fullscreenBtn].forEach(btn => btn.classList.remove('hidden'));
+        });
+
+        // Скачивание QR-кода
+        downloadBtn.addEventListener('click', () => {
+            const canvas = qrcodeDiv.querySelector('canvas');
+            if (canvas) {
+                const link = document.createElement('a');
+                link.download = 'qrcode.png';
+                link.href = canvas.toDataURL('image/png');
+                link.click();
+            }
+        });
+
+        // Копирование в буфер обмена
+        shareBtn.addEventListener('click', async () => {
+            const canvas = qrcodeDiv.querySelector('canvas');
+            if (canvas) {
+                try {
+                    const blob = await new Promise(resolve => canvas.toBlob(resolve));
+                    await navigator.clipboard.write([
+                        new ClipboardItem({ 'image/png': blob })
+                    ]);
+                    alert('QR-код скопирован в буфер обмена!');
+                } catch (error) {
+                    console.error('Ошибка при копировании:', error);
+                    alert('Не удалось скопировать QR-код');
+                }
+            }
+        });
+
+        // Открытие в полный экран
+        fullscreenBtn.addEventListener('click', () => {
+            const canvas = qrcodeDiv.querySelector('canvas');
+            if (canvas) {
+                const newWindow = window.open();
+                newWindow.document.write(`
+                    <title>QR-код</title>
+                    <body style="margin:0;display:flex;justify-content:center;align-items:center;height:100vh;background-color:${
+                        document.body.classList.contains('dark') ? '#1a1a1a' : '#ffffff'
+                    };">
+                        <img src="${canvas.toDataURL('image/png')}" style="max-width:100%;max-height:100%;"/>
+                    </body>
+                `);
+                newWindow.document.close();
+            }
+        });
+    </script>
 </body>
 </html>
