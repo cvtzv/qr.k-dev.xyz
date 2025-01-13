@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>.cvt roflannov - QR-code Generator.</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js" defer></script>
     <style>
         :root {
             --background-color: #0c0624;
@@ -151,6 +152,14 @@
             box-shadow: 0 0 20px rgba(107, 77, 196, 0.2);
         }
 
+        .error-message {
+            color: #ff4444;
+            margin: 10px 0;
+            padding: 10px;
+            border-radius: 5px;
+            background: rgba(255, 68, 68, 0.1);
+            display: none;
+        }
     </style>
 </head>
 <body>
@@ -158,6 +167,7 @@
     <div class="container">
         <h1>qr.kdev.world</h1>
         <input type="text" id="text-input" placeholder="Введите текст или URL">
+        <div class="error-message" id="error-message"></div>
         <button id="generate-btn">🚀 Сгенерировать QR-код</button>
         <div class="qr-container">
             <div id="qrcode"></div>
@@ -167,7 +177,6 @@
         <button id="fullscreen-btn" class="secondary-btn hidden">🌌 В полный экран</button>
     </div>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <script>
         function createStars() {
             const starsContainer = document.querySelector('.stars');
@@ -179,9 +188,7 @@
                 
                 const x = Math.random() * 100;
                 const y = Math.random() * 100;
-                
                 const size = Math.random() * 3;
-                
                 const duration = 3 + Math.random() * 3;
                 
                 star.style.cssText = `
@@ -197,75 +204,87 @@
             }
         }
 
-        createStars();
+        document.addEventListener('DOMContentLoaded', () => {
+            createStars();
 
-        const generateBtn = document.getElementById('generate-btn');
-        const textInput = document.getElementById('text-input');
-        const downloadBtn = document.getElementById('download-btn');
-        const shareBtn = document.getElementById('share-btn');
-        const fullscreenBtn = document.getElementById('fullscreen-btn');
-        const qrcodeDiv = document.getElementById('qrcode');
+            const generateBtn = document.getElementById('generate-btn');
+            const textInput = document.getElementById('text-input');
+            const downloadBtn = document.getElementById('download-btn');
+            const shareBtn = document.getElementById('share-btn');
+            const fullscreenBtn = document.getElementById('fullscreen-btn');
+            const qrcodeDiv = document.getElementById('qrcode');
+            const errorMessage = document.getElementById('error-message');
 
-        generateBtn.addEventListener('click', () => {
-            const text = textInput.value.trim();
-            
-            if (text === '') {
-                alert('Пожалуйста, введите текст или URL');
-                return;
-            }
+            generateBtn.addEventListener('click', () => {
+                const text = textInput.value.trim();
+                
+                if (text === '') {
+                    showError('Пожалуйста, введите текст или URL');
+                    return;
+                }
 
-            qrcodeDiv.innerHTML = '';
+                try {
+                    qrcodeDiv.innerHTML = '';
+                    errorMessage.style.display = 'none';
 
-            new QRCode(qrcodeDiv, {
-                text: text,
-                width: 128,
-                height: 128,
-                colorDark: '#ffffff',
-                colorLight: '#191233',
-                correctLevel: QRCode.CorrectLevel.H
+                    new QRCode(qrcodeDiv, {
+                        text: text,
+                        width: 256,
+                        height: 256,
+                        colorDark: '#ffffff',
+                        colorLight: '#191233',
+                        correctLevel: QRCode.CorrectLevel.L
+                    });
+
+                    [downloadBtn, shareBtn, fullscreenBtn].forEach(btn => btn.classList.remove('hidden'));
+                } catch (error) {
+                    showError('Ошибка при генерации QR-кода. Попробуйте уменьшить длину текста.');
+                }
             });
 
-            [downloadBtn, shareBtn, fullscreenBtn].forEach(btn => btn.classList.remove('hidden'));
-        });
-
-        downloadBtn.addEventListener('click', () => {
-            const canvas = qrcodeDiv.querySelector('canvas');
-            if (canvas) {
-                const link = document.createElement('a');
-                link.download = 'cosmic-qrcode.png';
-                link.href = canvas.toDataURL('image/png');
-                link.click();
+            function showError(message) {
+                errorMessage.textContent = message;
+                errorMessage.style.display = 'block';
             }
-        });
 
-        shareBtn.addEventListener('click', async () => {
-            const canvas = qrcodeDiv.querySelector('canvas');
-            if (canvas) {
-                try {
-                    const blob = await new Promise(resolve => canvas.toBlob(resolve));
-                    await navigator.clipboard.write([
-                        new ClipboardItem({ 'image/png': blob })
-                    ]);
-                    alert('QR-код скопирован в буфер обмена!');
-                } catch (error) {
-                    console.error('Ошибка при копировании:', error);
-                    alert('Не удалось скопировать QR-код');
+            downloadBtn.addEventListener('click', () => {
+                const canvas = qrcodeDiv.querySelector('canvas');
+                if (canvas) {
+                    const link = document.createElement('a');
+                    link.download = 'cosmic-qrcode.png';
+                    link.href = canvas.toDataURL('image/png');
+                    link.click();
                 }
-            }
-        });
+            });
 
-        fullscreenBtn.addEventListener('click', () => {
-            const canvas = qrcodeDiv.querySelector('canvas');
-            if (canvas) {
-                const newWindow = window.open();
-                newWindow.document.write(`
-                    <title>Космический QR-код</title>
-                    <body style="margin:0;display:flex;justify-content:center;align-items:center;height:100vh;background-color:#0c0624;">
-                        <img src="${canvas.toDataURL('image/png')}" style="max-width:100%;max-height:100%;"/>
-                    </body>
-                `);
-                newWindow.document.close();
-            }
+            shareBtn.addEventListener('click', async () => {
+                const canvas = qrcodeDiv.querySelector('canvas');
+                if (canvas) {
+                    try {
+                        const blob = await new Promise(resolve => canvas.toBlob(resolve));
+                        await navigator.clipboard.write([
+                            new ClipboardItem({ 'image/png': blob })
+                        ]);
+                        alert('QR-код скопирован в буфер обмена!');
+                    } catch (error) {
+                        showError('Не удалось скопировать QR-код');
+                    }
+                }
+            });
+
+            fullscreenBtn.addEventListener('click', () => {
+                const canvas = qrcodeDiv.querySelector('canvas');
+                if (canvas) {
+                    const newWindow = window.open();
+                    newWindow.document.write(`
+                        <title>Космический QR-код</title>
+                        <body style="margin:0;display:flex;justify-content:center;align-items:center;height:100vh;background-color:#0c0624;">
+                            <img src="${canvas.toDataURL('image/png')}" style="max-width:100%;max-height:100%;"/>
+                        </body>
+                    `);
+                    newWindow.document.close();
+                }
+            });
         });
     </script>
 </body>
