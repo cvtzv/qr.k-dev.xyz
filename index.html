@@ -231,9 +231,9 @@
                         text: text,
                         width: 256,
                         height: 256,
-                        colorDark: '#ffffff',
-                        colorLight: '#191233',
-                        correctLevel: QRCode.CorrectLevel.L
+                        colorDark: '#000000',
+                        colorLight: '#ffffff',
+                        correctLevel: QRCode.CorrectLevel.H
                     });
 
                     [downloadBtn, shareBtn, fullscreenBtn].forEach(btn => btn.classList.remove('hidden'));
@@ -277,8 +277,8 @@
                 if (canvas) {
                     const newWindow = window.open();
                     newWindow.document.write(`
-                        <title>.cvt roflannov - QR-code Done.</title>
-                        <body style="margin:0;display:flex;justify-content:center;align-items:center;height:100vh;background-color:#0c0624;">
+                        <title>.cvt roflannov - QR-code Done..</title>
+                        <body style="margin:0;display:flex;justify-content:center;align-items:center;height:100vh;background-color:#ffffff;">
                             <img src="${canvas.toDataURL('image/png')}" style="max-width:100%;max-height:100%;"/>
                         </body>
                     `);
